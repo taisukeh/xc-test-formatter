@@ -8,3 +8,6 @@ jobs:
       - run:
           name: Build
           command: swift build
+      - run:
+          name: Test
+          command: swift test
