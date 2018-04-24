@@ -21,6 +21,6 @@ let package = Package(
       .testTarget(
         name: "LibTest",
         dependencies: ["Lib"],
-        path: "Tests/Lib"),
+        path: "Tests/LibTests"),
     ]
 )
