@@ -19,7 +19,7 @@ let package = Package(
         name: "Lib",
         dependencies: []),
       .testTarget(
-        name: "LibTest",
+        name: "LibTests",
         dependencies: ["Lib"],
         path: "Tests/LibTests"),
     ]
