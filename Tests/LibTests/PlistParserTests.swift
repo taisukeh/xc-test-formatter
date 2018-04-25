@@ -12,12 +12,15 @@ class PlistParserTests: XCTestCase {
         ("testParse", testParse),
     ]
 
-    func testParse() {
-      if let d = parser.parse(file: "Tests/LibTests/fixtures/TestSummaries0.plist") {
-        print("\(d)")
-      } else {
-        print("oopss")
-      }
+    func testParse() throws {
+      guard let url = URL(string: "file:///Users/tahori/workspace/xc-test-reporter/Tests/LibTests/fixtures/TestSummaries0.plist") else { XCTFail(); return }
+
+      let data = try Data(contentsOf: url)
+      let decoder = PropertyListDecoder()
+      let r = try decoder.decode(Report.self, from: data)
+
+      HtmlGenerator().generate(report: r)
+
       // XCTAssertEqual(PlistParser().parse(), 10)
     }
 }
