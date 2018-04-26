@@ -8,9 +8,14 @@ public struct RunDestination: Codable {
   let LocalComputer: LocalComputer
   let Name: String
   let TargetArchitecture: String
+  let TargetDevice: TargetDevice
 }
 
 public struct LocalComputer: Codable {
+  let CPUKind: String
+  let LogicalCPUCoresPerPackage: Int
+  let CPUSpeedInMHz: Int
+  let RAMSizeInMegabytes: Int
   let ModelCode: String
   let ModelName: String
   let Name: String

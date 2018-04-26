@@ -19,7 +19,11 @@ class PlistParserTests: XCTestCase {
       let decoder = PropertyListDecoder()
       let r = try decoder.decode(Report.self, from: data)
 
-      HtmlGenerator().generate(report: r)
+      let html = HtmlGenerator().generate(report: r)
+
+      guard let outurl = URL(string: "file:///Users/tahori/workspace/xc-test-reporter/report.html") else { XCTFail(); return }
+      
+      try html.write(to: outurl, atomically: true, encoding: .utf8)
 
       // XCTAssertEqual(PlistParser().parse(), 10)
     }
