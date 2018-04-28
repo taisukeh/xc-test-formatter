@@ -13,18 +13,18 @@ class PlistParserTests: XCTestCase {
     ]
 
     func testParse() throws {
-      guard let url = URL(string: "file:///Users/tahori/workspace/xc-test-reporter/Tests/LibTests/fixtures/TestSummaries0.plist") else { XCTFail(); return }
+      let plist = "file:///Users/tahori/Library/Developer/Xcode/DerivedData/TestApp0-eokgthoeibfdbbczwrztpepdinxt//Logs/Test/BDA1400A-4908-4155-9573-DD8B12483C28_TestSummaries.plist"
+      // let plist = "file:///Users/tahori/workspace/xc-test-reporter/Tests/LibTests/fixtures/TestSummaries0.plist"
+
+      guard let url = URL(string: plist) else { XCTFail(); return }
 
       let data = try Data(contentsOf: url)
       let decoder = PropertyListDecoder()
       let r = try decoder.decode(Report.self, from: data)
 
-      let html = HtmlGenerator().generate(report: r)
-
-      guard let outurl = URL(string: "file:///Users/tahori/workspace/xc-test-reporter/report.html") else { XCTFail(); return }
+      guard let outurl = URL(string: "file:///Users/tahori/workspace/xc-test-reporter/report") else { XCTFail(); return }
       
-      try html.write(to: outurl, atomically: true, encoding: .utf8)
-
+      try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl)
       // XCTAssertEqual(PlistParser().parse(), 10)
     }
 }
