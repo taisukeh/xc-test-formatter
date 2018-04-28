@@ -20,6 +20,11 @@
    border: solid 1px gray;
  }
 
+ table.tests td.test-status {
+   border: solid 1px gray;
+   text-align: center;
+ }
+
 .test-body-2 {
   padding-left: 0.8em;
 }
@@ -54,24 +59,58 @@
  tr.status-success td.test-status {
    background-color: #b9e0bc;
    border-color: #9bdc94;
+   color: #5bbc54;
  }
 
  tr.status-success td {
    border-color: #ededed;
  }
 
+ tr.status-failure td {
+   background-color: #f5dde0;
+ }
+
  tr.status-failure td.test-status {
    background-color: #f2c5c9;
    border-color: #f9a8b1;
+   color: red;
  }
 
  tr.status-failure td {
    border-color: #f2cacf;
  }
 
+ tr.status-failure .test-name {
+ }
+
  .test-name-and-result {
    display: flex;
    flex-direction: column;
+ }
+
+
+ /** failure table **/
+
+ .failure-summary {
+   margin-right: 1.6em;
+   margin-top: 0.5em;
+   margin-bottom: 0.3em;
+   padding-top: 0.5em;
+   padding-left: 1em;
+   display: flex;
+   flex-direction: column;
+
+   border-top: solid 1px #f9a8b1;
+ }
+
+ .failure-message {
+   margin-top: 0.4em;
+ }
+
+ .failure-file {
+   color: #555;
+   margin-top: 0.5em;
+   padding-left: 1em;
  }
 
 </style>
@@ -108,8 +147,8 @@
    }
 
    let statusMark = status => {
-     if (status == "Success") return "";
-     if (status == "Failure") return "";
+     if (status == "Success") return "✓";
+     if (status == "Failure") return "✗";
    };
 
    let statusClass = status => {
@@ -119,11 +158,11 @@
    };
 
    let failureSummary = summary => {
-     let failureFile = `${summary.FileName}:${summary.LineNumber}`;
+     let failureFile = `${summary.FileName}: ${summary.LineNumber}`;
 
-     return h("div", {}, [
-       h("div", {"class": "failure-file"}, failureFile),
+     return h("div", {"class": "failure-summary"}, [
        h("div", {"class": "failure-message"}, summary.Message),
+       h("div", {"class": "failure-file"}, failureFile),
      ]);
    };
 
