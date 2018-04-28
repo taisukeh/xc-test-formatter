@@ -62,6 +62,15 @@ public struct Test: Codable {
   let TestStatus: String?
   let FailureSummaries: [FailureSummary]?
   let ActivitySummaries: [ActivitySummary]?
+  let PerformanceMetrics: [PerformanceMetric]?
+
+  var Passed: Int {
+    if let tests = Subtests {
+      return tests.filter { $0.TestStatus == "Success" }.count
+    } else {
+      return 0;
+    }
+  }
 }
 
 public enum TestStatus: String, Codable {
@@ -81,6 +90,17 @@ public struct ActivitySummary: Codable {
 
   let Attachments: [Attachment]? // com.apple.dt.xctest.activity-type.attachmentContainer
   let Title: String
+}
+
+public struct PerformanceMetric: Codable {
+  let Identifier: String
+  let MaxPercentRegression: Int
+  let MaxPercentRelativeStandardDeviation: Int
+  let MaxRegression: Double
+  let MaxStandardDeviation: Double
+  let Measurements: [Double]
+  let Name: String
+  let UnitOfMeasurement: String
 }
 
 public struct Attachment: Codable {

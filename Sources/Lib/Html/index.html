@@ -1,24 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="mini-default.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<title>mini.css - Minimal, responsive, style-agnostic CSS framework</title>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="mini.css - Minimal, responsive, style-agnostic CSS framework">
-<meta name="keywords" content="mini, mini.css, CSS, framework, minimal, responsive, style-agnostic, front-end, frontend, Sass, toolkit">
-<meta name="author" content="Angelos Chalaris (chalarangelo)">
-<meta property="og:title" content="mini.css - Minimal, responsive, style-agnostic CSS framework">
-<meta property="og:description" content="mini.css is a tiny CSS framework designed to build quick, modern and responsive websites." />
-<meta property="og:type" content="website" /><meta property="og:image" content="page_thumb.png">
-<meta property="og:url" content="https://chalarangelo.github.io/mini.css/"><link rel="icon" type="image/png" href="favicon.png">
 
+<title>Xcode Test Report</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://unpkg.com/hyperapp"></script>
+
+<style>
+
+ table.tests {
+   border: none;
+   border-spacing: 0px;
+ }
+
+ table.tests td {
+   border: solid 1px gray;
+ }
+
+.test-body-2 {
+  padding-left: 0.8em;
+}
+
+.test-body-3 {
+  padding-left: 1.6em;
+}
+
+ .test-status {
+   height: 30px;
+   width:  30px;
+ }
+
+ tr.status-pkg td.test-status {
+   background-color: #7fbec2;
+   border-color: #6cbfbc;
+ }
+
+
+ tr.status-pkg .test-body,  tr.status-pkg .test-attachment, tr.status-pkg .test-duration {
+   background-color: #c3e5e6;
+ }
+
+ tr.status-pkg .test-name {
+   font-weight: bold;
+ }
+
+ tr.status-pkg td {
+   border-color: #abd9da;
+ }
+
+ tr.status-success td.test-status {
+   background-color: #b9e0bc;
+   border-color: #9bdc94;
+ }
+
+ tr.status-success td {
+   border-color: #ededed;
+ }
+
+ tr.status-failure td.test-status {
+   background-color: #f2c5c9;
+   border-color: #f9a8b1;
+ }
+
+ tr.status-failure td {
+   border-color: #f2cacf;
+ }
+
+ .test-name-and-result {
+   display: flex;
+   flex-direction: column;
+ }
+
+</style>
 </head>
-
 
 <body>
 
-  {{ report.FormatVersion }}
+<script>
+ const h = hyperapp.h;
+ const app = hyperapp.app;
+
+ const flatten = nested => Array.prototype.concat.apply([], nested);
+
+ const state = __state_data__;
+
+ const actions = {
+   down: value => state => ({ count: state.count - value }),
+   up: value => state => ({ count: state.count + value })
+ };
+
+/** View **/
+
+ const testableSummaryView = (testableSummary) =>
+   h("div", {"class": "testable-summary"}, [
+     h("h1", {}, testableSummary.TestName),
+     h("table", {"class": "tests", border: 0 },
+       testableSummary.Tests.map(test => testView(test, 0))),
+   ]
+   );
+
+ const testView = (test, level) => {
+   if (level < 2) {
+     return test.Subtests ? test.Subtests.map(test => testView(test, level + 1)) : [];
+   }
+
+   let statusMark = status => {
+     if (status == "Success") return "";
+     if (status == "Failure") return "";
+   };
+
+   let statusClass = status => {
+     if (status == "Success") return "status-success";
+     if (status == "Failure") return "status-failure";
+     return "status-pkg";
+   };
+
+   let failureSummary = summary => {
+     let failureFile = `${summary.FileName}:${summary.LineNumber}`;
+
+     return h("div", {}, [
+       h("div", {"class": "failure-file"}, failureFile),
+       h("div", {"class": "failure-message"}, summary.Message),
+     ]);
+   };
+
+   let testNameAndResult = () => {
+     let failureSummaries = [];
+     if (test.FailureSummaries && test.FailureSummaries.length > 0) {
+       failureSummaries = test.FailureSummaries.map(failureSummary);
+     }
+
+     return h("div", {"class": "test-name-and-result"}, [
+       h("div", {"class": "test-name"}, test.TestName),
+     ].concat(failureSummaries));
+   };
+
+   return [
+     h("tr", {"class": `test ${statusClass(test.TestStatus)}`}, [
+       h("td", {"class": 'test-status'}, statusMark(test.TestStatus)),
+       h("td", {"class": `test-body test-body-${level}`}, testNameAndResult()),
+       h("td", {"class": 'test-attachment'}, ""),
+       h("td", {"class": 'test-duration'}, Math.round(test.Duration * 100) / 100),
+     ])
+   ].concat(
+     test.Subtests ? flatten(test.Subtests.map(test => testView(test, level + 1))) : []
+   );
+ }
+
+ const view = (report, actions) => {
+   return h("div", {},
+            report.TestableSummaries.map(testableSummaryView),
+   );
+ };
+
+ const container = document.body;
+ app(state, actions, view, container);
+</script>
 
 </body>
 
