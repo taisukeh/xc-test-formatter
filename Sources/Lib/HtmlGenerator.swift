@@ -20,6 +20,7 @@ public class HtmlGenerator {
     try html.write(to: htmlUrl, atomically: true, encoding: .utf8)
 
     try copyAttachments(report: report, plistPath: plistPath, outDir: outDir)
+    try copyLogo(outDir: outDir)
   }
 
   func copyAttachments(report: Report, plistPath: URL, outDir: URL) throws {
@@ -45,6 +46,12 @@ public class HtmlGenerator {
         
       }
     }
+  }
+
+  func copyLogo(outDir: URL) throws {
+    let outUrl = outDir.appendingPathComponent("XcodeTestReporter.svg")
+
+    try svg_XcodeTestReporter.write(to: outUrl, atomically: true, encoding: .utf8)
   }
 
   func attachmentFiles(report: Report) -> [String] {

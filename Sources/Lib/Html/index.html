@@ -12,17 +12,98 @@
 
 <style>
 
+ body {
+   font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック  Medium', meiryo, sans-serif;
+   color: #222;
+   margin: 0;
+ }
+
  .container {
    display: flex;
    flex-direction: column;
    align-items: center;
-
    max-width: 100%;
+   background-color: #fafafa;
+   padding-top: 64px;
+ }
+
+ /** header **/
+
+ .header {
+   position: fixed;
+   top: 0;
+   right: 0;
+   left: 0;
+   height: 64px;
+   background-color: #fff;
+   box-shadow: 0 3px 2px -2px rgba(200,200,200,0.2);
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
+
+ .header-content {
+   height: 100%;
+   width: 85%;
+   min-width: 85%;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+ }
+
+ .logo {
+   height: 40px;
+ }
+
+ /** radio **/
+
+ .radio input {
+   display: none;
+ }
+ .radio label{
+   display: block;
+   float: left;
+   cursor: pointer;
+   width: 50px;
+   margin: 0;
+   padding: 5px;
+   color: #2F80ED;
+   font-size: 16px;
+   text-align: center;
+   line-height: 1;
+   transition: .2s;
+
+   border: solid 1px #2F80ED;
+ }
+ .radio label {
+   border-left: none;
+ }
+
+ .radio label:first-of-type{
+   border-radius: 3px 0 0 3px;
+   border: solid 1px #2F80ED;
+ }
+ .radio label:last-of-type{
+   border-radius: 0 3px 3px 0;
+ }
+
+ .radio input[type="radio"]:checked + label {
+   background-color: #2F80ED;
+   color: #fff;
+ }
+
+
+ /** Test **/
+
+ .testable-summaries {
+   width: 85%;
+   min-width: 85%;
  }
 
  .testable-summary {
-   width: 85%;
-   min-width: 85%;
+   width: 100%;
+   min-width: 100%;
  }
 
  table.tests {
@@ -186,27 +267,36 @@
 
  const flatten = nested => Array.prototype.concat.apply([], nested);
 
- const state = __state_data__;
+ const state = {
+   filter: "all",
+   report: __state_data__,
+ };
 
  const actions = {
-   down: value => state => ({ count: state.count - value }),
-   up: value => state => ({ count: state.count + value })
+   setFilter: value => state => Object.assign({}, state, { filter: value }),
  };
 
 /** View **/
 
- const testableSummaryView = (testableSummary) =>
-   h("div", {"class": "testable-summary"}, [
+ const testableSummaryView = (testableSummary, filter) => {
+   return h("div", {"class": "testable-summary"}, [
      h("h1", {}, testableSummary.TestName),
      h("table", {"class": "tests", border: 0 },
-       testableSummary.Tests.map(test => testView(test, 0))),
+       testableSummary.Tests.map(test => testView(test, filter, 0))),
    ]
    );
+ };
 
- const testView = (test, level) => {
+ const testView = (test, filter, level) => {
+
    if (level < 2) {
-     return test.Subtests ? test.Subtests.map(test => testView(test, level + 1)) : [];
+     return test.Subtests ? test.Subtests.map(test => testView(test, filter, level + 1)).filter(v => v) : [];
    }
+
+   if (filter == "failed" && test.TestStatus == "Success") return null;
+   if (filter == "passed" && test.TestStatus == "Failure") return null;
+
+   let isPkg = !test.TestStatus;
 
    let statusMark = status => {
      if (status == "Success") return "✓";
@@ -280,20 +370,54 @@
      ].concat(results));
    };
 
+
+   let subTests = test.Subtests ? flatten(test.Subtests.map(test => testView(test, filter, level + 1)).filter(v => v)) : [];
+
+   console.log(test.TestName);
+   console.log(isPkg);
+   console.log(subTests);
+   if (isPkg && subTests.length == 0) return null;
+
    return [
      h("tr", {"class": `test ${statusClass(test.TestStatus)}`}, [
        h("td", {"class": 'test-status'}, statusMark(test.TestStatus)),
        h("td", {"class": `test-body test-body-${level}`}, testNameAndResult()),
        h("td", {"class": 'test-duration'}, Math.round(test.Duration * 100) / 100  + "s"),
      ])
-   ].concat(
-     test.Subtests ? flatten(test.Subtests.map(test => testView(test, level + 1))) : []
-   );
+   ].concat(subTests) ;
  }
 
- const view = (report, actions) => {
+ const header = (state, actions) => {
+   let filters = [
+     { value: "all", text: "All" },
+     { value: "passed", text: "Passed" },
+     { value: "failed", text: "Failed" },
+   ];
+
+   return h("div", {"class": "header"}, [
+     h("div", {"class": "header-content"}, [
+       h("img", {"class": "logo", src: "XcodeTestReporter.svg"}, []),
+       h("div", {"class": "filter radio"}, flatten(filters.map( filter => [
+         h("input", {type: "radio",
+                     name: "filter",
+                     value: filter.value,
+                     id: filter.value,
+                     checked: state.filter == filter.value ? "1" : "",
+                     onchange: (v) => { actions.setFilter(filter.value); },
+         }, []),
+         h("label", {"for": filter.value, "class": "radio-label"}, filter.text),
+       ]))),
+     ]),
+   ]);
+ };
+
+
+ const view = (state, actions) => {
    return h("div", {"class": "container"},
-            report.TestableSummaries.map(testableSummaryView),
+            header(state, actions),
+            h("div", {"class": "testable-summaries"}, [
+              state.report.TestableSummaries.map(summary => testableSummaryView(summary, state.filter)),
+            ])
    );
  };
 
