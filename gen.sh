@@ -7,9 +7,9 @@ for file in Sources/Lib/Html/*.{html,svg}; do
     swift_file="$file".swift
 
     if [ $extension = "html" ]; then
-        echo "func ${extension}_${name}(stateData: String) -> String {" > "$swift_file"
+        echo "func ${extension}_${name}(reportData: String, reportSummaryData: String) -> String {" > "$swift_file"
         echo '  return """' >> "$swift_file"
-        cat "$file" | sed -e 's/__state_data__/\\(stateData)/' >> "$swift_file"
+        cat "$file" | sed -e 's/__report_data__/\\(reportData)/' | sed -e 's/__report_summary_data__/\\(reportSummaryData)/' >> "$swift_file"
         echo '"""' >> "$swift_file"
         echo "}" >> "$swift_file"
         echo "" >> "$swift_file"

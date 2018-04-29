@@ -269,18 +269,19 @@
 
  const state = {
    filter: "all",
-   report: __state_data__,
+   report: __report_data__,
+   reportSummary: __report_summary_data__,
  };
 
  const actions = {
    setFilter: value => state => Object.assign({}, state, { filter: value }),
  };
 
-/** View **/
+ /** View **/
 
  const testableSummaryView = (testableSummary, filter) => {
    return h("div", {"class": "testable-summary"}, [
-     h("h1", {}, testableSummary.TestName),
+     h("h2", {}, `${testableSummary.TestName}`),
      h("table", {"class": "tests", border: 0 },
        testableSummary.Tests.map(test => testView(test, filter, 0))),
    ]
@@ -288,7 +289,6 @@
  };
 
  const testView = (test, filter, level) => {
-
    if (level < 2) {
      return test.Subtests ? test.Subtests.map(test => testView(test, filter, level + 1)).filter(v => v) : [];
    }

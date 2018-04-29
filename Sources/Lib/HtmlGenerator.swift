@@ -4,16 +4,21 @@ public class HtmlGenerator {
   public init() {}
 
   public func generate(report: Report, plistPath: URL, outDir: URL) throws {
+    // Create out dir
     if !FileManager.default.fileExists(atPath: outDir.path) {
       try FileManager.default.createDirectory(atPath: outDir.path,
                                               withIntermediateDirectories: true,
                                               attributes: nil)
     }
 
+    let reportSummary = ReportSummary(report: report)
+
     let jsonEncoder = JSONEncoder()
-    let jsonData = try! jsonEncoder.encode(report)
-    let jsonString = String(data: jsonData, encoding: .utf8)!
-    let html = html_index(stateData: jsonString)
+
+    let html = html_index(
+      reportData: String(data: try! jsonEncoder.encode(report), encoding: .utf8)!,
+      reportSummaryData: String(data: try! jsonEncoder.encode(reportSummary), encoding: .utf8)!
+    )
 
     let htmlUrl = outDir.appendingPathComponent("index.html")
 
