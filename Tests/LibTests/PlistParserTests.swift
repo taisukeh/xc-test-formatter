@@ -13,7 +13,7 @@ class PlistParserTests: XCTestCase {
     ]
 
     func testParse() throws {
-      let plist = "file:///Users/tahori/Library/Developer/Xcode/DerivedData/TestApp0-eokgthoeibfdbbczwrztpepdinxt//Logs/Test/BDA1400A-4908-4155-9573-DD8B12483C28_TestSummaries.plist"
+      let plist = "file:///Users/tahori/Library/Developer/Xcode/DerivedData/TestApp0-eokgthoeibfdbbczwrztpepdinxt//Logs/Test/EC1897DC-AC8A-43BC-ADFB-7DF9C3422F29_TestSummaries.plist"
       // let plist = "file:///Users/tahori/workspace/xc-test-reporter/Tests/LibTests/fixtures/TestSummaries0.plist"
 
       guard let url = URL(string: plist) else { XCTFail(); return }

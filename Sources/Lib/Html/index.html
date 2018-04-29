@@ -8,12 +8,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://unpkg.com/hyperapp"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/layzr.js/2.0.2/layzr.min.js"></script>
 
 <style>
+
+ .container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+
+   max-width: 100%;
+ }
+
+ .testable-summary {
+   width: 85%;
+   min-width: 85%;
+ }
 
  table.tests {
    border: none;
    border-spacing: 0px;
+   table-layout: fixed;
+   min-width: 100%;
+   max-width: 100%;
  }
 
  table.tests td {
@@ -30,12 +47,15 @@
 }
 
 .test-body-3 {
-  padding-left: 1.6em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
  .test-status {
    height: 30px;
    width:  30px;
+   min-width:  30px;
+   min-width:  30px;
  }
 
  tr.status-pkg td.test-status {
@@ -83,20 +103,29 @@
  tr.status-failure .test-name {
  }
 
+ .test-name  {
+   word-break: break-word;
+ }
+
  .test-name-and-result {
    display: flex;
    flex-direction: column;
+   padding-top: 0.6em;
+   padding-bottom: 0.6em;
  }
 
+ tr.status-pkg .test-name-and-result, tr.status-success .test-name-and-result {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+ }
 
  /** failure table **/
 
  .failure-summary {
-   margin-right: 1.6em;
    margin-top: 0.5em;
-   margin-bottom: 0.3em;
    padding-top: 0.5em;
-   padding-left: 1em;
+   padding-left: 0em;
    display: flex;
    flex-direction: column;
 
@@ -104,13 +133,41 @@
  }
 
  .failure-message {
-   margin-top: 0.4em;
+   margin-top: 0.0em;
  }
 
  .failure-file {
    color: #555;
    margin-top: 0.5em;
    padding-left: 1em;
+ }
+
+ /** attachment **/
+
+ .images {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   margin-top: 1em;
+ }
+
+ figure.attachment-image, img.attachment-image {
+   width: 140px;
+   -webkit-margin-start: 0;
+   -webkit-margin-end: 25px;
+   margin-left: 0;
+   margin-right: 25px;
+ }
+
+ figure figcaption {
+   text-align: center;
+ }
+
+ /** duration **/
+
+ .test-duration {
+   padding-left: 0.5rem;
+   padding-right: 0.5rem;
  }
 
 </style>
@@ -121,6 +178,7 @@
 <script>
  const h = hyperapp.h;
  const app = hyperapp.app;
+ const layzr = Layzr();
 
  const flatten = nested => Array.prototype.concat.apply([], nested);
 
@@ -166,23 +224,61 @@
      ]);
    };
 
+   let imagesSummary = () => {
+     let imageFiles = images();
+     let oncreate = () => { layzr.update(); layzr.check(); };
+
+     if (imageFiles.length == 0) return null;
+
+     return h("div", {"class": "images"},
+              imageFiles.map(image =>
+                h("figure", { oncreate, "class": "attachment-image" }, [
+                  h("img", {"class": "attachment-image", "data-normal": image.file}, []),
+                  h("figcaption", {}, image.name),
+                ])
+              )
+     );
+   };
+
+   let images = () => {
+     if (!test.ActivitySummaries) return [];
+
+     return flatten(test.ActivitySummaries.map(activitySummary => {
+       if (!activitySummary.Attachments) return [];
+       if (activitySummary.ActivityType != "com.apple.dt.xctest.activity-type.attachmentContainer") return [];
+
+       return activitySummary.Attachments.map ( attachment => {
+         let file = `Attachments/${attachment.Filename}`;
+         return { file, name: attachment.Name };
+       });
+     }));
+   };
+
    let testNameAndResult = () => {
+     let results = [];
+
      let failureSummaries = [];
      if (test.FailureSummaries && test.FailureSummaries.length > 0) {
        failureSummaries = test.FailureSummaries.map(failureSummary);
      }
 
-     return h("div", {"class": "test-name-and-result"}, [
+     results = results.concat(failureSummaries);
+
+     let imageNodes = imagesSummary();
+     if (imageNodes) results.push(imageNodes);
+
+     let hasResult = failureSummaries.length > 0 || imageNodes;
+
+     return h("div", {"class": hasResult ? "test-name-and-result" : "" }, [
        h("div", {"class": "test-name"}, test.TestName),
-     ].concat(failureSummaries));
+     ].concat(results));
    };
 
    return [
      h("tr", {"class": `test ${statusClass(test.TestStatus)}`}, [
        h("td", {"class": 'test-status'}, statusMark(test.TestStatus)),
        h("td", {"class": `test-body test-body-${level}`}, testNameAndResult()),
-       h("td", {"class": 'test-attachment'}, ""),
-       h("td", {"class": 'test-duration'}, Math.round(test.Duration * 100) / 100),
+       h("td", {"class": 'test-duration'}, Math.round(test.Duration * 100) / 100  + "s"),
      ])
    ].concat(
      test.Subtests ? flatten(test.Subtests.map(test => testView(test, level + 1))) : []
@@ -190,7 +286,7 @@
  }
 
  const view = (report, actions) => {
-   return h("div", {},
+   return h("div", {"class": "container"},
             report.TestableSummaries.map(testableSummaryView),
    );
  };

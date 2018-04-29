@@ -37,9 +37,13 @@ public class HtmlGenerator {
     }
 
 
-    try files.forEach { file in
-      try FileManager.default.copyItem(at: attachmentsDir.appendingPathComponent(file),
-                                       to: outAttachmentsDir.appendingPathComponent(file))
+    files.forEach { file in
+      do {
+        try FileManager.default.copyItem(at: attachmentsDir.appendingPathComponent(file),
+                                         to: outAttachmentsDir.appendingPathComponent(file))
+      } catch {
+        
+      }
     }
   }
 
