@@ -246,6 +246,50 @@
    text-align: center;
  }
 
+ /** test summary **/
+
+ .test-target {
+   display: flex;
+   flex-direction: row;
+   margin-top: 1.2rem;
+   margin-bottom: 0.7rem;
+   align-items: baseline;
+ }
+
+ .test-target-name {
+   font-size: 1.0rem;
+   font-weight: bold;
+ }
+
+ .test-target-summary {
+   font-size: 1.0rem;
+   margin-left: 0.8rem;
+ }
+
+ .test-target-summary, .test-target-summary div {
+   display: flex;
+   flex-direction: row;
+   align-items: baseline;
+ }
+
+ .test-target-summary-num {
+   font-size: 1.0rem;
+   margin-right: 0.3rem;
+ }
+
+ .test-target-summary-passed {
+   color: #5bbc54;
+   margin-right: 0.6rem;
+ }
+
+ .test-target-summary-failed {
+   color: red;
+ }
+
+ .test-target-summary-failed-zero {
+   display: none;
+ }
+
  /** duration **/
 
  .test-duration {
@@ -253,6 +297,8 @@
    text-align: center;
    padding-left: 0.5rem;
    padding-right: 0.5rem;
+   max-width: 4rem;
+   width: 4rem;
  }
 
 </style>
@@ -279,9 +325,30 @@
 
  /** View **/
 
- const testableSummaryView = (testableSummary, filter) => {
+ const testableSummaryView = (testableSummary, reportSummary, filter) => {
+   let testSummary = reportSummary.testableSummary[testableSummary.TestName];
+
+
+   let testSummaryText =
+     h("div", {"class": "test-target-summary"}, [
+       h("div", {"class": "test-target-summary-passed"}, [
+         h("div", {"class": "test-target-summary-num"}, testSummary.success),
+         h("div", {}, testSummary.failed > 0 ? "Passed, " : "Passed.")]),
+     ].concat((() => {
+       if (testSummary.failed > 0) {
+         return h("div", {"class": testSummary.failed > 0 ? "test-target-summary-failed" : "test-target-summary-failed-zero"}, [
+           h("div", {"class": "test-target-summary-num"}, testSummary.failed),
+           h("div", {}, "Failed")]);
+       } else {
+         return [];
+       }
+     })()));
+
    return h("div", {"class": "testable-summary"}, [
-     h("h2", {}, `${testableSummary.TestName}`),
+     h("div", {"class": "test-target"}, [
+       h("div", {"class": "test-target-name"}, `${testableSummary.TestName}`),
+       testSummaryText,
+     ]),
      h("table", {"class": "tests", border: 0 },
        testableSummary.Tests.map(test => testView(test, filter, 0))),
    ]
@@ -373,9 +440,6 @@
 
    let subTests = test.Subtests ? flatten(test.Subtests.map(test => testView(test, filter, level + 1)).filter(v => v)) : [];
 
-   console.log(test.TestName);
-   console.log(isPkg);
-   console.log(subTests);
    if (isPkg && subTests.length == 0) return null;
 
    return [
@@ -412,11 +476,24 @@
  };
 
 
+ const testSummary = state => {
+   let summaryText = testSummary => {
+     let r = "";
+     r += ""
+   };
+
+   return h('div', {"class": "test-summary"}, [
+     state.reportSummary
+   ]);
+ }
+
  const view = (state, actions) => {
    return h("div", {"class": "container"},
             header(state, actions),
+            testSummary(state),
             h("div", {"class": "testable-summaries"}, [
-              state.report.TestableSummaries.map(summary => testableSummaryView(summary, state.filter)),
+              state.report.TestableSummaries.map(summary =>
+                testableSummaryView(summary, state.reportSummary, state.filter)),
             ])
    );
  };
