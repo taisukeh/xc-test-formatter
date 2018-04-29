@@ -31,6 +31,7 @@
    table-layout: fixed;
    min-width: 100%;
    max-width: 100%;
+   word-break: break-all;
  }
 
  table.tests td {
@@ -104,7 +105,6 @@
  }
 
  .test-name  {
-   word-break: break-all;
    padding-top: 0.5rem;
    padding-bottom: 0.5rem;
  }
@@ -168,6 +168,8 @@
  /** duration **/
 
  .test-duration {
+   word-break: keep-all;
+   text-align: center;
    padding-left: 0.5rem;
    padding-right: 0.5rem;
  }
@@ -235,7 +237,9 @@
      return h("div", {"class": "images"},
               imageFiles.map(image =>
                 h("figure", { oncreate, "class": "attachment-image" }, [
-                  h("img", {"class": "attachment-image", "data-normal": image.file}, []),
+                  h("a", { href: image.file, target: "_blank" }, [
+                    h("img", {"class": "attachment-image", "data-normal": image.file}, [])
+                  ]),
                   h("figcaption", {}, image.name),
                 ])
               )
@@ -295,6 +299,15 @@
 
  const container = document.body;
  app(state, actions, view, container);
+
+ window.addEventListener('scroll', () => {
+   layzr.check();
+ });
+
+ window.addEventListener('resize', () => {
+   layzr.check();
+ });
+
 </script>
 
 </body>
