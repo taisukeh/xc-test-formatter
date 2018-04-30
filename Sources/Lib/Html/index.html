@@ -477,19 +477,30 @@
 
 
  const testSummary = state => {
-   let summaryText = testSummary => {
-     let r = "";
-     r += ""
-   };
+   let filters = [
+     { value: "all", text: "Tests" },
+     { value: "passed", text: "Passed" },
+     { value: "failed", text: "Failed" },
+   ];
 
    return h('div', {"class": "test-summary"}, [
-     state.reportSummary
+       h("div", {"class": "filter radio"}, flatten(filters.map( filter => [
+         h("input", {type: "radio",
+                     name: "filter",
+                     value: filter.value,
+                     id: filter.value,
+                     checked: state.filter == filter.value ? "1" : "",
+                     onchange: (v) => { actions.setFilter(filter.value); },
+         }, []),
+         h("label", {"for": filter.value, "class": "radio-label"}, filter.text),
+       ])))
    ]);
  }
 
  const view = (state, actions) => {
    return h("div", {"class": "container"},
             header(state, actions),
+
             testSummary(state),
             h("div", {"class": "testable-summaries"}, [
               state.report.TestableSummaries.map(summary =>
