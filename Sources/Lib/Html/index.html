@@ -16,6 +16,12 @@
    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック  Medium', meiryo, sans-serif;
    color: #222;
    margin: 0;
+
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+
+   background-color: #fafafa;
  }
 
  .container {
@@ -23,8 +29,10 @@
    flex-direction: column;
    align-items: center;
    max-width: 100%;
-   background-color: #fafafa;
    padding-top: 64px;
+
+   width: 85%;
+   min-width: 85%;
  }
 
  /** header **/
@@ -97,15 +105,20 @@
  /** Test **/
 
  .test-summary {
-   width: 85%;
-   min-width: 85%;
-
+   margin-top: 30px;
+ }
+ 
+ .env-summary {
+   margin-top: 10px;
+ }
+ 
+ .test-summary, .env-summary {
    align-self: flex-start;
  }
 
  .testable-summaries {
-   width: 85%;
-   min-width: 85%;
+   width: 100%;
+   min-width: 100%;
  }
 
  .testable-summary {
@@ -268,7 +281,7 @@
    font-weight: bold;
  }
 
- .test-target-summary {
+ .testable-summary .test-target-summary {
    font-size: 1.0rem;
    margin-left: 0.8rem;
  }
