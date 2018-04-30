@@ -96,6 +96,13 @@
 
  /** Test **/
 
+ .test-summary {
+   width: 85%;
+   min-width: 85%;
+
+   align-self: flex-start;
+ }
+
  .testable-summaries {
    width: 85%;
    min-width: 85%;
@@ -278,8 +285,7 @@
  }
 
  .test-target-summary-passed {
-   color: #5bbc54;
-   margin-right: 0.6rem;
+   margin-right: 0.4rem;
  }
 
  .test-target-summary-failed {
@@ -325,29 +331,30 @@
 
  /** View **/
 
+ const testSummaryText = (testSummary) => {
+   return h("div", {"class": "test-target-summary"}, [
+     h("div", {"class": "test-target-summary-passed"}, [
+       h("div", {"class": "test-target-summary-num"}, testSummary.tests),
+       h("div", {}, testSummary.failed > 0 ? "tests with " : "tests.")]),
+   ].concat((() => {
+     if (testSummary.failed > 0) {
+       return h("div", {"class": testSummary.failed > 0 ? "test-target-summary-failed" : "test-target-summary-failed-zero"}, [
+         h("div", {"class": "test-target-summary-num"}, testSummary.failed),
+         h("div", {}, "failures.")]);
+     } else {
+       return [];
+     }
+   })()));
+ };
+
  const testableSummaryView = (testableSummary, reportSummary, filter) => {
    let testSummary = reportSummary.testableSummary[testableSummary.TestName];
 
 
-   let testSummaryText =
-     h("div", {"class": "test-target-summary"}, [
-       h("div", {"class": "test-target-summary-passed"}, [
-         h("div", {"class": "test-target-summary-num"}, testSummary.success),
-         h("div", {}, testSummary.failed > 0 ? "Passed, " : "Passed.")]),
-     ].concat((() => {
-       if (testSummary.failed > 0) {
-         return h("div", {"class": testSummary.failed > 0 ? "test-target-summary-failed" : "test-target-summary-failed-zero"}, [
-           h("div", {"class": "test-target-summary-num"}, testSummary.failed),
-           h("div", {}, "Failed")]);
-       } else {
-         return [];
-       }
-     })()));
-
    return h("div", {"class": "testable-summary"}, [
      h("div", {"class": "test-target"}, [
        h("div", {"class": "test-target-name"}, `${testableSummary.TestName}`),
-       testSummaryText,
+       testSummaryText(testSummary),
      ]),
      h("table", {"class": "tests", border: 0 },
        testableSummary.Tests.map(test => testView(test, filter, 0))),
@@ -477,31 +484,30 @@
 
 
  const testSummary = state => {
-   let filters = [
-     { value: "all", text: "Tests" },
-     { value: "passed", text: "Passed" },
-     { value: "failed", text: "Failed" },
-   ];
+   let s = state.reportSummary.testSummary;
 
    return h('div', {"class": "test-summary"}, [
-       h("div", {"class": "filter radio"}, flatten(filters.map( filter => [
-         h("input", {type: "radio",
-                     name: "filter",
-                     value: filter.value,
-                     id: filter.value,
-                     checked: state.filter == filter.value ? "1" : "",
-                     onchange: (v) => { actions.setFilter(filter.value); },
-         }, []),
-         h("label", {"for": filter.value, "class": "radio-label"}, filter.text),
-       ])))
+     testSummaryText(s)
    ]);
- }
+ };
+
+ const envSummary = state => {
+   let targetDevice = state.report.RunDestination.TargetDevice;
+   let pc = state.report.RunDestination.LocalComputer;
+
+   let text = `${targetDevice.ModelName}, ${targetDevice.OperatingSystemVersion}, ${targetDevice.Platform.Name}`;
+
+   return h('div', {"class": "env-summary"}, [
+     h("div", {}, text)
+   ]);
+ };
 
  const view = (state, actions) => {
    return h("div", {"class": "container"},
             header(state, actions),
 
             testSummary(state),
+            envSummary(state),
             h("div", {"class": "testable-summaries"}, [
               state.report.TestableSummaries.map(summary =>
                 testableSummaryView(summary, state.reportSummary, state.filter)),

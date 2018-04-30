@@ -1,5 +1,5 @@
 public struct ReportSummary: Codable {
-  var testSummary: TestSummary = TestSummary(success: 0, failed: 0)
+  var testSummary: TestSummary = TestSummary(tests: 0, success: 0, failed: 0)
   var testableSummary: [String: TestSummary] = [:]
 
   public init(report: Report){
@@ -25,15 +25,15 @@ public struct ReportSummary: Codable {
       failed += r.failed
     }
 
-    return TestSummary(success: success, failed: failed)
+    return TestSummary(tests: success + failed, success: success, failed: failed)
   }
 
   func testSummary(test: Test) -> TestSummary {
     if let status = test.TestStatus {
       if status == "Success" {
-        return TestSummary(success: 1, failed: 0)
+        return TestSummary(tests: 1, success: 1, failed: 0)
       } else {
-        return TestSummary(success: 0, failed: 1)
+        return TestSummary(tests: 1, success: 0, failed: 1)
       }
     }
 
@@ -41,17 +41,19 @@ public struct ReportSummary: Codable {
       return testSummary(tests: subtests)
     }
 
-    return TestSummary(success: 0, failed: 0)
+    return TestSummary(tests: 0, success: 0, failed: 0)
   }
 } 
 
 public struct TestSummary: Codable {
+  let tests: Int
   let success: Int
   let failed: Int
 }
 
 func + (l: TestSummary, r: TestSummary) -> TestSummary {
-  return TestSummary(success: l.success + r.success,
+  return TestSummary(tests: l.tests + r.tests,
+                     success: l.success + r.success,
                      failed: l.failed + r.failed)
 }
 
