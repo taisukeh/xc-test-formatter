@@ -3,7 +3,7 @@ import Foundation
 public class HtmlGenerator: Generator {
   public init() {}
 
-  public func generateReport(report: Report, plistPath: URL, outDir: URL, fileName: String) throws {
+  public func generateReport(report: Report, plistPath: URL, outDir: URL) throws {
     let reportSummary = ReportSummary(report: report)
 
     let jsonEncoder = JSONEncoder()
@@ -13,6 +13,7 @@ public class HtmlGenerator: Generator {
       reportSummaryData: String(data: try! jsonEncoder.encode(reportSummary), encoding: .utf8)!
     )
 
+    let fileName = outputFileName(plistPath: plistPath, ext: "html")
     let htmlUrl = outDir.appendingPathComponent(fileName)
 
     try html.write(to: htmlUrl, atomically: true, encoding: .utf8)

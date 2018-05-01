@@ -4,8 +4,9 @@ public class JUnitGenerator: Generator {
   public init() {
   }
 
-  public func generateReport(report: Report, plistPath: URL, outDir: URL, fileName: String) throws {
+  public func generateReport(report: Report, plistPath: URL, outDir: URL) throws {
     let xml = testsuites(report: report)
+    let fileName = outputFileName(plistPath: plistPath, ext: "xml")
     let fileUrl = outDir.appendingPathComponent(fileName)
 
     try xml.write(to: fileUrl, atomically: true, encoding: .utf8)

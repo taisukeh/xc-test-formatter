@@ -8,8 +8,6 @@ enum Format: String {
 }
 
 struct Options {
-  var junitFileName = "junit.xml"
-  var htmlFileName = "index.html"
   var formats = [Format.junit]
   var path = "."
   var outDir = "."
@@ -45,16 +43,6 @@ public func cli() {
                                usage: "The report format to output for (one of 'html', 'junit', or comma-separated values). (default: junit)",
                                completion: .none)
 
-    let junitFileNameArg = parser.add(option: "--junit-file-name", shortName: "-j",
-                               kind: String.self,
-                               usage: "The report file name for junit (default : junit.xml)",
-                               completion: .none)
-
-    let htmlFileNameArg = parser.add(option: "--html-file-name", shortName: "-l",
-                                     kind: String.self,
-                                     usage: "The report file name for junit (default : index.html)",
-                                     completion: .none)
-
     var options = Options()
 
     let args = Array(CommandLine.arguments.dropFirst())
@@ -75,9 +63,6 @@ public func cli() {
       }
     }
 
-
-    options.junitFileName = result.get(junitFileNameArg) ?? options.junitFileName
-    options.htmlFileName = result.get(htmlFileNameArg) ?? options.htmlFileName
 
     try main(options: options)
   } catch ArgumentParserError.expectedValue(let value) {
@@ -124,13 +109,11 @@ func generateReport(plistUrl: Foundation.URL, options: Options) throws {
     case .html:
       try HtmlGenerator().generate(report: report,
                                    plistPath: plistUrl,
-                                   outDir: options.outDirUrl,
-                                   fileName: options.htmlFileName)
+                                   outDir: options.outDirUrl)
     case .junit:
       try JUnitGenerator().generate(report: report,
                                     plistPath: plistUrl,
-                                    outDir: options.outDirUrl,
-                                    fileName: options.junitFileName)
+                                    outDir: options.outDirUrl)
     }
   }
 }
