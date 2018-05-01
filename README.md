@@ -34,9 +34,7 @@ End with an example of getting some data out of the system or using it for a lit
 
 ## VS.
 
-- [trainer](https://github.com/KrauseFx/trainer) - `trainer` is developed by @KrauseFx 
-
-Add additional notes about how to deploy this on a live system
+- [trainer](https://github.com/KrauseFx/trainer) - `trainer` is developed by @KrauseFx who is the author of [fastlane](https://github.com/KrauseFx/trainer), and it works well fastlane. `Xcode Test Reporter` can generate HTML report while `trainer` can generate only JUnit report.
 
 ## Contributing
 
