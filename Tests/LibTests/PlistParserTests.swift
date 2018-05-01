@@ -21,7 +21,7 @@ class PlistParserTests: XCTestCase {
     let decoder = PropertyListDecoder()
     let r = try decoder.decode(Report.self, from: data)
 
-    guard let outurl = URL(string: "file:///Users/tahori/workspace/xc-test-reporter/report") else { XCTFail(); return }
+    guard let outurl = URL(string: "file://\(basePath)/report") else { XCTFail(); return }
     
     try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl)
     // XCTAssertEqual(PlistParser().parse(), 10)
