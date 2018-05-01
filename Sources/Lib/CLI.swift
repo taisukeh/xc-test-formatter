@@ -105,16 +105,19 @@ func generateReport(plistUrl: Foundation.URL, options: Options) throws {
   let report = try decodePlist(Report.self, plistUrl: plistUrl)
 
   try options.formats.forEach { format in
+    let fileUrl: Foundation.URL
     switch format {
     case .html:
-      try HtmlGenerator().generate(report: report,
-                                   plistPath: plistUrl,
-                                   outDir: options.outDirUrl)
+      fileUrl = try HtmlGenerator().generate(report: report,
+                                             plistPath: plistUrl,
+                                             outDir: options.outDirUrl)
     case .junit:
-      try JUnitGenerator().generate(report: report,
-                                    plistPath: plistUrl,
-                                    outDir: options.outDirUrl)
+      fileUrl = try JUnitGenerator().generate(report: report,
+                                              plistPath: plistUrl,
+                                              outDir: options.outDirUrl)
     }
+
+    print("Generated: \(fileUrl.path)")
   }
 }
 

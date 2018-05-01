@@ -3,7 +3,7 @@ import Foundation
 public class HtmlGenerator: Generator {
   public init() {}
 
-  public func generateReport(report: Report, plistPath: URL, outDir: URL) throws {
+  public func generateReport(report: Report, plistPath: URL, outDir: URL) throws -> URL {
     let reportSummary = ReportSummary(report: report)
 
     let jsonEncoder = JSONEncoder()
@@ -20,6 +20,8 @@ public class HtmlGenerator: Generator {
 
     try copyAttachments(report: report, plistPath: plistPath, outDir: outDir)
     try copyLogo(outDir: outDir)
+
+    return htmlUrl
   }
 
   func copyAttachments(report: Report, plistPath: URL, outDir: URL) throws {

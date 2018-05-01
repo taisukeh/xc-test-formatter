@@ -14,15 +14,19 @@ Supported platforms:
 
 ### Installing
 
+You can use Homebrew:
 ```
-curl -o xcode-test-reporter https://github.com/taisukeh/xcode-test-reporter/releases/download/0.0.6/xcode-test-reporter_darwin_x86_64
-chmod +x xcode-test-reporter
+brew tap taisukeh/xcode-test-reporter
+brew install xcode-test-reporter
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Or download from [GitHub releases](https://github.com/taisukeh/xcode-test-reporter/releases).
 
 ## Usage
 
+```
+xcode-test-reporter --path ./something
+```
 
 ## Deployment.
 
