@@ -3,6 +3,14 @@ public struct Report: Codable {
   let FormatVersion: String
   let RunDestination: RunDestination
   let TestableSummaries: [TestableSummary]
+
+  var testSummary: TestSummary {
+    return TestableSummaries.reduce(into: TestSummary()) { $0 + $1.testSummary }
+  }
+
+  var Duration: Double {
+    return TestableSummaries.reduce(0.0) { $0 + $1.Duration }
+  }
 }
 
 public struct RunDestination: Codable {
@@ -52,6 +60,14 @@ public struct TestableSummary: Codable {
   let TargetName: String
   let TestName: String
   let Tests: [Test]
+
+  var testSummary: TestSummary {
+    return Tests.reduce(into: TestSummary()) { $0 + $1.testSummary }
+  }
+
+  var Duration: Double {
+    return Tests.reduce(0.0) { $0 + $1.Duration }
+  }
 }
 
 public struct Test: Codable {
@@ -72,11 +88,22 @@ public struct Test: Codable {
       return 0;
     }
   }
-}
 
-public enum TestStatus: String, Codable {
-  case success = "Success"
-  case failure = "Failure"
+  var testSummary: TestSummary {
+    if let tests = Subtests {
+      return tests.reduce(into: TestSummary()) { $0 += $1.testSummary }
+    }
+
+    if let status = TestStatus {
+      if status == "Success" {
+        return TestSummary(success: 1, failed: 0)
+      } else {
+        return TestSummary(success: 0, failed: 1)
+      }
+    }
+
+    return TestSummary()
+  }
 }
 
 public struct FailureSummary: Codable {

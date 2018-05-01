@@ -46,9 +46,24 @@ public struct ReportSummary: Codable {
 } 
 
 public struct TestSummary: Codable {
-  let tests: Int
-  let success: Int
-  let failed: Int
+  var tests: Int = 0
+  var success: Int = 0
+  var failed: Int = 0
+
+  init(tests: Int, success: Int, failed: Int) {
+    self.tests = tests
+    self.success = success
+    self.failed = failed
+  }
+
+  init(success: Int, failed: Int) {
+    self.tests = success + failed
+    self.success = success
+    self.failed = failed
+  }
+
+  init() {
+  }
 }
 
 func + (l: TestSummary, r: TestSummary) -> TestSummary {

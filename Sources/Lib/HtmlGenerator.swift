@@ -6,12 +6,14 @@ public class HtmlGenerator {
   public func generate(report: Report, plistPath: URL, outDir: URL) throws {
     // Create out dir
     if !FileManager.default.fileExists(atPath: outDir.path) {
+      FileManager.default
       try FileManager.default.createDirectory(atPath: outDir.path,
                                               withIntermediateDirectories: true,
                                               attributes: nil)
     }
 
     let reportSummary = ReportSummary(report: report)
+    
 
     let jsonEncoder = JSONEncoder()
 
