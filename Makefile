@@ -11,7 +11,7 @@ build_release: generate_html_swift
 	swift build $(RELEASE_FLAGS) $(TARGET_FLAGS)
 	mkdir -p output
 	dir=`swift build --show-bin-path $(RELEASE_FLAGS) $(TARGET_FLAGS)` && \
-	echo cp $$dir/xcode-test-reporter $TRAVIS_BUILD_DIR/xcode-test-reporter_darwin_x86_64
+	echo cp $$dir/xcode-test-reporter $$TRAVIS_BUILD_DIR/xcode-test-reporter_darwin_x86_64
 
 test: generate_html_swift
 	swift test -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.12"

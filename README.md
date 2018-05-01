@@ -30,7 +30,11 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo
 
-## Deployment
+## Deployment.
+
+## VS.
+
+- [trainer](https://github.com/KrauseFx/trainer) - `trainer` is developed by @KrauseFx 
 
 Add additional notes about how to deploy this on a live system
 
