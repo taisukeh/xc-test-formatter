@@ -22,7 +22,7 @@ class PlistParserTests: XCTestCase {
 
     let outurl = URL(fileURLWithPath: "report")
     
-    try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl)
-    try JUnitGenerator().generate(report: r, plistPath: url, outDir: outurl)
+    try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl, fileName: "index.html")
+    try JUnitGenerator().generate(report: r, plistPath: url, outDir: outurl, fileName: "junit.xml")
   }
 }
