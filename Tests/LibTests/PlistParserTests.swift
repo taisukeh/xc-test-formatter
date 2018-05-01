@@ -12,16 +12,15 @@ class PlistParserTests: XCTestCase {
   ]
 
   func testParse() throws {
-    let basePath = FileManager.default.currentDirectoryPath
     let plist = "Tests/LibTests/fixtures/TestSummaries0.plist"
 
-    guard let url = URL(string: "file://\(basePath)/\(plist)") else { XCTFail(); return }
+    let url = URL(fileURLWithPath: plist)
 
     let data = try Data(contentsOf: url)
     let decoder = PropertyListDecoder()
     let r = try decoder.decode(Report.self, from: data)
 
-    guard let outurl = URL(string: "file://\(basePath)/report") else { XCTFail(); return }
+    let outurl = URL(fileURLWithPath: "report")
     
     try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl)
     try JUnitGenerator().generate(report: r, plistPath: url, outDir: outurl)
