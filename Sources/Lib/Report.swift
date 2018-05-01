@@ -1,3 +1,4 @@
+import Foundation
 
 public struct Report: Codable {
   let FormatVersion: String
