@@ -1,4 +1,4 @@
-<div align="center"><center><img align="center" src="./Sources/Lib/Html/XcodeTestReporter.svg" height="80px"></center></div>
+<img align="center" src="./Sources/Lib/Html/XcodeTestReporter.svg" height="80px">
 ====
 
 Xcode Test Reporter
