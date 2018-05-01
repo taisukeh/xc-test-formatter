@@ -149,8 +149,8 @@
 }
 
 .test-body-3 {
-  padding-left: 2em;
-  padding-right: 2em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
 }
 
  .test-status {
@@ -161,6 +161,9 @@
  }
 
  tr.status-pkg td.test-status {
+   padding-left: 2.8em;
+   text-align: left;
+   font-weight: bold;
    background-color: #7fbec2;
    border-color: #6cbfbc;
  }
@@ -271,7 +274,7 @@
  .test-target {
    display: flex;
    flex-direction: row;
-   margin-top: 1.2rem;
+   margin-top: 2rem;
    margin-bottom: 0.7rem;
    align-items: baseline;
  }
@@ -464,10 +467,19 @@
 
    return [
      h("tr", {"class": `test ${statusClass(test.TestStatus)}`}, [
-       h("td", {"class": 'test-status'}, statusMark(test.TestStatus)),
-       h("td", {"class": `test-body test-body-${level}`}, testNameAndResult()),
-       h("td", {"class": 'test-duration'}, Math.round(test.Duration * 100) / 100  + "s"),
-     ])
+     ].concat(
+       (isPkg ? (
+         [
+           h("td", {"class": 'test-status', "colspan": isPkg ? '2' : '1' }, test.TestName),
+         ]
+       ) : (
+         [
+           h("td", {"class": 'test-status', }, statusMark(test.TestStatus)),
+           h("td", {"class": `test-body test-body-${level}`}, testNameAndResult()),
+         ]
+       )),
+       [h("td", {"class": 'test-duration'}, Math.round(test.Duration * 100) / 100  + "s")],
+     ))
    ].concat(subTests) ;
  }
 
