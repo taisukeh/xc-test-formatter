@@ -5,7 +5,7 @@ public struct Report: Codable {
   let TestableSummaries: [TestableSummary]
 
   var testSummary: TestSummary {
-    return TestableSummaries.reduce(into: TestSummary()) { $0 + $1.testSummary }
+    return TestableSummaries.reduce(into: TestSummary()) { $0 += $1.testSummary }
   }
 
   var Duration: Double {
@@ -62,7 +62,7 @@ public struct TestableSummary: Codable {
   let Tests: [Test]
 
   var testSummary: TestSummary {
-    return Tests.reduce(into: TestSummary()) { $0 + $1.testSummary }
+    return Tests.reduce(into: TestSummary()) { $0 += $1.testSummary }
   }
 
   var Duration: Double {

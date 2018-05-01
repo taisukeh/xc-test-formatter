@@ -1,14 +1,23 @@
+import Foundation
 
-public class JUnitReport: Codable {
-  public init(report: Report) {
+public class JUnitGenerator: Generator {
+  public init() {
   }
-  
+
+  public func generateReport(report: Report, plistPath: URL, outDir: URL) throws {
+    let xml = testsuites(report: report)
+    let fileUrl = outDir.appendingPathComponent("junit.xml")
+
+    try xml.write(to: fileUrl, atomically: true, encoding: .utf8)
+  }
+
   func testsuites(report: Report) -> String {
     let device = report.RunDestination.TargetDevice
     let name = "\(device.ModelName), \(device.OperatingSystemVersion), \(device.Platform.Name)"
     
     return """
-      <testsuites name="\(name)" tests="\(report.testSummary.tests)" errors="0" failures="\(report.testSummary.failed)" time="\(report.Duration)">
+<?xml version="1.0" encoding="UTF-8" ?> 
+<testsuites name="\(name)" tests="\(report.testSummary.tests)" errors="0" failures="\(report.testSummary.failed)" time="\(report.Duration)">
 \(report.TestableSummaries.map { testsuite($0) }.joined(separator: "\n") )
 </testsuites>
 """

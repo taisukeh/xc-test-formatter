@@ -24,6 +24,6 @@ class PlistParserTests: XCTestCase {
     guard let outurl = URL(string: "file://\(basePath)/report") else { XCTFail(); return }
     
     try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl)
-    // XCTAssertEqual(PlistParser().parse(), 10)
+    try JUnitGenerator().generate(report: r, plistPath: url, outDir: outurl)
   }
 }
