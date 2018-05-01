@@ -9,8 +9,8 @@ build: generate_html_swift
 
 build_release: generate_html_swift
 	swift build $(RELEASE_FLAGS) $(TARGET_FLAGS)
+	mkdir -p output
 	dir=`swift build --show-bin-path $(RELEASE_FLAGS) $(TARGET_FLAGS)` && \
-	mdkir -p output
 	echo cp $$dir/xcode-test-reporter output/xcode-test-reporter_darwin_x86_64
 
 test: generate_html_swift
