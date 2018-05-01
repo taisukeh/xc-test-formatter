@@ -14,21 +14,15 @@ Supported platforms:
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
 ```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+curl -o xcode-test-reporter https://github.com/taisukeh/xcode-test-reporter/releases/download/0.0.6/xcode-test-reporter_darwin_x86_64
+chmod +x xcode-test-reporter
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
+
+## Usage
+
 
 ## Deployment.
 
