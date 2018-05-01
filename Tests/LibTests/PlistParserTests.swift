@@ -20,7 +20,7 @@ class PlistParserTests: XCTestCase {
     let decoder = PropertyListDecoder()
     let r = try decoder.decode(Report.self, from: data)
 
-    let outurl = URL(fileURLWithPath: "report")
+    let outurl = URL(fileURLWithPath: "test_report")
     
     try HtmlGenerator().generate(report: r, plistPath: url, outDir: outurl, fileName: "index.html")
     try JUnitGenerator().generate(report: r, plistPath: url, outDir: outurl, fileName: "junit.xml")
