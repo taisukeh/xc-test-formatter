@@ -2,5 +2,19 @@ os: osx
 osx_image: xcode9.3
 
 script:
-  - make test
-  - make build
+- make test
+- make build
+
+before_deploy:
+- git config --local user.name "Taisuke Hori"
+- git config --local user.email "taisuke.horix@gmail.com"
+- make build_release
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Q/JkHWqhv1j3lYGx9kW6iNCYkNLkbaIaqdSn+4YxDl6FPOy9erNNr213beN8cLLji76rDMbgxac9RdCl8whg1P+ED53UDWiTnzVjlDcPoN6TTpPsIFgJn08fp35IYYYlg4WLSS2pyS4nmTFe7HeBt3bYs4DJ9mWzWAX4xFtzfjNrqy8Nk8p1ymIW3KAKANbbUxzWgAZwX3lwxZahDVbEc+7YDuSwGjMmHZU5wa+bhJaYWgL1Ur13EZpIh6i7a11oooFxIjqCdE5vF4XcDVCvYJDd+V8XyEAacZ8F/nnEbUMAz/GPiIjy0CjUEbt06d5mESq7eC8XrmeZ6ljtN+sTqqt9ti+t2Ry/FSkphtUgH8RFKQVoL4u3mncSDmJogFUxWZnDqorK0KsUQdjMnE7Z57il2ykYt5Oidmx6pQquUmSy2sPF6UcO3BEAoPUzN5yQc0xTwY6FW5SGX8U6fr/3ybVAElQzM8WOJJIF90AzNLSoQPfMkxovxFvBwabpchu1KrTDYLWuHKl9MAB14DRsE6kZNJFAIPX4jsfJEf8U92ZSYhlpCNSLLFrD/DWOOBgr2agg8mer1YpBNbovse4mPZPb2y7oQHlr28187r+JZTfugTPYB/NXEQv4cO02KFsfyhldDSuf7KudD6aKoquoGR2ylSYDB4aPgU+oHkwsK3g=
+  file: "output/xcode-test-reporter_darwin_x86_64"
+  tags: true
+  on:
+    repo: taisukeh/xc-test-reporter

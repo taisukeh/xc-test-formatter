@@ -27,7 +27,7 @@ public func cli() {
   do {
     // Command description
     let parser = ArgumentParser(commandName: "xcode-test-reporter",
-                                usage: "[--path <path>] [--output_directory <path>]",
+                                usage: "",
                                 overview: "Convert xcodebuild plist files to HTML/JUnit reports.")
     // options
     let pathArg = parser.add(option: "--path", shortName: "-p",
