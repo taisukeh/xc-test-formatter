@@ -1,3 +1,5 @@
-# xc-test-reporter
+Xcode Test Reporter
+====
+
 
 A description of this package.
