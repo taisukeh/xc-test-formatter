@@ -12,10 +12,10 @@ class PlistParserTests: XCTestCase {
   ]
 
   func testParse() throws {
-    let plist = "file:///Users/tahori/Library/Developer/Xcode/DerivedData/TestApp0-eokgthoeibfdbbczwrztpepdinxt//Logs/Test/5F749F97-27BC-4ACA-B201-9257FFD24B76_TestSummaries.plist"
-    // let plist = "file:///Users/tahori/workspace/xc-test-reporter/Tests/LibTests/fixtures/TestSummaries0.plist"
+    let basePath = FileManager.default.currentDirectoryPath
+    let plist = "Tests/LibTests/fixtures/TestSummaries0.plist"
 
-    guard let url = URL(string: plist) else { XCTFail(); return }
+    guard let url = URL(string: "file://\(basePath)/\(plist)") else { XCTFail(); return }
 
     let data = try Data(contentsOf: url)
     let decoder = PropertyListDecoder()
