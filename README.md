@@ -24,11 +24,16 @@ Or download from [GitHub releases](https://github.com/taisukeh/xcode-test-report
 
 ## Usage
 
+You can use as follows:
 ```
-xcode-test-reporter --path ./something
+xcode-test-reporter --format html,junit --path ~/Library/Developer/Xcode/DerivedData/MyApp-*/Logs/Test  --output-directory myreport
 ```
 
-## Deployment.
+Options:
+- `path`: Path containing the plist files. Current directory by default.
+- `output-directory`: Directoy in which the report files should be written to.  Same directory as source by default.
+- `format`: The report format to output for (one of 'html', 'junit', or comma-separated values). JUnit by default.
+
 
 ## VS.
 

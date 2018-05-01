@@ -35,7 +35,7 @@ public func cli() {
 
     let outDirArg = parser.add(option: "--output-directory", shortName: "-o",
                               kind: String.self,
-                              usage: "Directoy in which the report files should be written to (default: ./report)",
+                              usage: "Directoy in which the report files should be written to.  Same directory as source by default.",
                               completion: .none)
 
     let formatArg = parser.add(option: "--format", shortName: "-f",
