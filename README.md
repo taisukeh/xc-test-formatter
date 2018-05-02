@@ -1,6 +1,7 @@
 <div align="center"><img src="./Sources/Lib/Html/XcodeTestReporter.svg" height="80px"></div>
 ====
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 [![Build Status](https://travis-ci.org/taisukeh/xcode-test-reporter.svg?branch=master)](https://travis-ci.org/taisukeh/xcode-test-reporter)
 ![apm](https://img.shields.io/apm/l/vim-mode.svg)
 ![platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
