@@ -31,31 +31,26 @@ class TestApp0UITests: XCTestCase {
     func testUIExample() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-      let attachment0 = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-      attachment0.lifetime = .keepAlways  // 成功後もデータを保持
-      attachment0.name = "image0"
-      add(attachment0)
 
-      let attachment2 = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-      attachment2.lifetime = .deleteOnSuccess
-      attachment2.name = "image2"
-      add(attachment2)
+      XCUIApplication().buttons["change_color"].tap()
 
-      let attachment1 = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-      attachment1.lifetime = .keepAlways  // 成功後もデータを保持
-      add(attachment1)
+      // capture("image3")
       
+      XCUIApplication().buttons["change_color"].tap()
+
+      // capture("image4")
     }
 
   func testUIExample2() {
     // Use recording to get started writing UI tests.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     
-    for i in 0 ..< 10 {
+    for i in 0 ..< 3 {
       capture("image\(i)", lifeTime: .keepAlways)
+      XCUIApplication().buttons["change_color"].tap()
     }
     
-    XCTFail("ふぁーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー")
+    XCTFail("Something went wrong")
   }
   
 
