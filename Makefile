@@ -9,11 +9,12 @@ build: generate_html_swift
 
 build_release: generate_html_swift
 	swift build $(RELEASE_FLAGS) $(TARGET_FLAGS)
-	mkdir -p build
-	dir=`swift build --show-bin-path $(RELEASE_FLAGS) $(TARGET_FLAGS)`
-	cd $$dir && tar czvf xcode-test-reporter_darwin_x86_64.tar.gz xcode-test-reporter
-	mv $$dir/xcode-test-reporter_darwin_x86_64.tar.gz build
-	openssl dgst -sha256 $$dir/xcode-test-reporter > build/xcode-test-reporter_darwin_x86_64.sha256
+	build_dir=$(PWD)/build && \
+	mkdir -p $$build_dir && \
+	dir=`swift build --show-bin-path $(RELEASE_FLAGS) $(TARGET_FLAGS)` && \
+	cd $$dir && tar czvf xcode-test-reporter_darwin_x86_64.tar.gz xcode-test-reporter && \
+	mv $$dir/xcode-test-reporter_darwin_x86_64.tar.gz $$build_dir && \
+	cat $$dir/xcode-test-reporter | openssl dgst -sha256 > $$build_dir/xcode-test-reporter_darwin_x86_64.sha256
 
 test: generate_html_swift
 	swift test -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.12"
