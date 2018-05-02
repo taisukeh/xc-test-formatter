@@ -9,16 +9,8 @@ enum Format: String {
 
 struct Options {
   var formats = [Format.junit]
-  var path = "."
-  var outDir = "."
-
-  var pathUrl: Foundation.URL {
-    return URL(fileURLWithPath: path)
-  }
-
-  var outDirUrl: Foundation.URL {
-    return URL(fileURLWithPath: outDir)
-  }
+  var pathUrl = URL(fileURLWithPath: ".")
+  var outDirUrl = URL(fileURLWithPath: ".")
 }
 
 public func cli() {
@@ -48,8 +40,20 @@ public func cli() {
     let args = Array(CommandLine.arguments.dropFirst())
     let result = try parser.parse(args)
 
-    options.path = result.get(pathArg) ?? options.path
-    options.outDir = result.get(outDirArg) ?? options.path // Same directory as path by default
+    if let path = result.get(pathArg) {
+      options.pathUrl = URL(fileURLWithPath: path)
+    }
+
+    if let outDir = result.get(outDirArg) {
+      options.outDirUrl = URL(fileURLWithPath: outDir)
+    } else {
+      // Same directory as path by default
+      if isDirectory(options.pathUrl) {
+        options.outDirUrl = options.pathUrl
+      } else {
+        options.outDirUrl = options.pathUrl.deletingLastPathComponent()
+      }
+    }
 
     if let formatsStr = result.get(formatArg) {
       let formats = formatsStr.components(separatedBy: ",")
@@ -74,17 +78,29 @@ public func cli() {
   }
 }
 
-func plistFiles(path: String) throws  -> [String] {
-  let files = try FileManager.default.contentsOfDirectory(atPath: path)
+func plistFiles(pathUrl: Foundation.URL) throws  -> [String] {
+  var isDirectory: ObjCBool = ObjCBool(false)
 
-  return files.filter { $0.hasSuffix("TestSummaries.plist") }
+  let exists = FileManager.default.fileExists(atPath: pathUrl.path, isDirectory: &isDirectory)
+
+  if !exists {
+    printError("file or directory not found at the path.")
+    exit(1)
+  }
+
+  if isDirectory.boolValue {
+    let files = try FileManager.default.contentsOfDirectory(atPath: pathUrl.path)
+    return files.filter { $0.hasSuffix("TestSummaries.plist") }
+  } else {
+    return [pathUrl.path]
+  }
 }
 
 func main(options: Options) throws {
-  let files = try plistFiles(path: options.path)
+  let files = try plistFiles(pathUrl: options.pathUrl)
 
   if files.isEmpty {
-    printError("No test result files found in directory '\(options.path)', make sure the file name ends with 'TestSummaries.plist\n")
+    printError("No test result files found in directory '\(options.pathUrl.path)', make sure the file name ends with 'TestSummaries.plist\n")
     
     exit(1)
   }
@@ -119,6 +135,19 @@ func generateReport(plistUrl: Foundation.URL, options: Options) throws {
 
     print("Generated: \(fileUrl.path)")
   }
+}
+
+func isDirectory(_ url: Foundation.URL) -> Bool {
+  var isDirectory: ObjCBool = ObjCBool(false)
+
+  let exists = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
+
+  if !exists {
+    printError("file or directory not found at `\(url.path)`.")
+    exit(1)
+  }
+
+  return isDirectory.boolValue
 }
 
 func printError(_ s: String) {
