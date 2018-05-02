@@ -20,12 +20,13 @@ public class HtmlGenerator: Generator {
 
     try copyAttachments(report: report, plistPath: plistPath, outDir: outDir)
     try copyLogo(outDir: outDir)
+    try copyHyperapp(outDir: outDir)
+    try copyLayzr(outDir: outDir)
 
     return htmlUrl
   }
 
-  func copyAttachments(report: Report, plistPath: URL, outDir: URL) throws {
-    
+  func copyAttachments(report: Report, plistPath: URL, outDir: URL) throws {    
     let plistDirUrl = plistPath.deletingLastPathComponent()
     let files = attachmentFiles(report: report)
     
@@ -51,8 +52,17 @@ public class HtmlGenerator: Generator {
 
   func copyLogo(outDir: URL) throws {
     let outUrl = outDir.appendingPathComponent("XcodeTestReporter.svg")
-
     try svg_XcodeTestReporter.write(to: outUrl, atomically: true, encoding: .utf8)
+  }
+
+  func copyHyperapp(outDir: URL) throws {
+    let outUrl = outDir.appendingPathComponent("hyperapp.js")
+    try js_hyperapp.write(to: outUrl, atomically: true, encoding: .utf8)
+  }
+
+  func copyLayzr(outDir: URL) throws {
+    let outUrl = outDir.appendingPathComponent("layzr.js")
+    try js_layzr.write(to: outUrl, atomically: true, encoding: .utf8)
   }
 
   func attachmentFiles(report: Report) -> [String] {
