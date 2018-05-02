@@ -11,7 +11,7 @@ build_release: generate_html_swift
 	swift build $(RELEASE_FLAGS) $(TARGET_FLAGS)
 	mkdir -p build
 	dir=`swift build --show-bin-path $(RELEASE_FLAGS) $(TARGET_FLAGS)`
-	cd "$dir" && tar czvf xcode-test-reporter_darwin_x86_64.tar.gz xcode-test-reporter
+	cd $$dir && tar czvf xcode-test-reporter_darwin_x86_64.tar.gz xcode-test-reporter
 	mv $$dir/xcode-test-reporter_darwin_x86_64.tar.gz build
 	openssl dgst -sha256 $$dir/xcode-test-reporter > build/xcode-test-reporter_darwin_x86_64.sha256
 
