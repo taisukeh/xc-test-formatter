@@ -10,7 +10,7 @@
 ![platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
 </div>
 
-The `Xcode Test Reporter` generates JUnit or HTML report from Xcode `plist` test report files.
+`Xcode Test Reporter` generates JUnit or HTML report from Xcode `plist` test report files.
 
 ## Prerequisites
 
