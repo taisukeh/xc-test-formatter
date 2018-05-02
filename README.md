@@ -35,8 +35,8 @@ Options:
 - `format`: The report format to output for (one of 'html', 'junit', or comma-separated values). JUnit by default.
 
 
-HTML sample:
-![image](./assets/html_demo.png)
+HTML report sample:
+![image](assets/html_demo.png)
 
 ## VS.
 
