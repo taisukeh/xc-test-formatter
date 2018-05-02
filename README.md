@@ -1,16 +1,11 @@
-<div align="center">
-  <img src="./Sources/Lib/Html/XcodeTestReporter.svg" height="80px">
-</div>
+<div align="center"><img src="./Sources/Lib/Html/XcodeTestReporter.svg" height="80px"></div>
 
-<div align="center">
- 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 [![Build Status](https://travis-ci.org/taisukeh/xcode-test-reporter.svg?branch=master)](https://travis-ci.org/taisukeh/xcode-test-reporter)
 ![apm](https://img.shields.io/apm/l/vim-mode.svg)
 ![platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
-</div>
 
-`Xcode Test Reporter` generates JUnit or HTML report from Xcode `plist` test report files.
+The `Xcode Test Reporter` Generates JUnit or HTML report from Xcode `plist` test report files.
 
 ## Prerequisites
 
@@ -39,6 +34,9 @@ Options:
 - `output-directory`: Directoy in which the report files should be written to.  Same directory as source by default.
 - `format`: The report format to output for (one of 'html', 'junit', or comma-separated values). JUnit by default.
 
+
+HTML sample:
+![image](./assets/html_demo.png)
 
 ## VS.
 
