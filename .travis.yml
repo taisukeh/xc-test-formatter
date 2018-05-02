@@ -20,4 +20,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    repo: taisukeh/xc-test-reporter
+    repo: taisukeh/xcode-test-reporter
