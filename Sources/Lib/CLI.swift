@@ -8,7 +8,7 @@ enum Format: String {
 }
 
 struct Options {
-  var formats = [Format.junit]
+  var formats = [Format.junit, Format.html]
   var pathUrl = URL(fileURLWithPath: ".")
   var outDirUrl = URL(fileURLWithPath: ".")
   var outputJson = false
@@ -33,7 +33,7 @@ public func cli() {
 
     let formatArg = parser.add(option: "--format", shortName: "-f",
                                kind: String.self,
-                               usage: "The report format to output for (one of 'html', 'junit', or comma-separated values). (default: junit)",
+                               usage: "The report format to output for (one of 'html', 'junit', or comma-separated values). (default: junit,html)",
                                completion: .none)
 
     let outputJsonArg = parser.add(option: "--output-json",
