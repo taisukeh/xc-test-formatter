@@ -9,7 +9,7 @@
 
 </div>
 
-The `Xcode Test Reporter` Generates JUnit or HTML report from Xcode `plist` test report files.
+The `Xcode Test Reporter` generates JUnit or HTML report from Xcode `plist` test report files.
 
 HTML report sample:
 ![image](assets/html_demo.png)
