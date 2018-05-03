@@ -11,6 +11,7 @@ struct Options {
   var formats = [Format.junit]
   var pathUrl = URL(fileURLWithPath: ".")
   var outDirUrl = URL(fileURLWithPath: ".")
+  var outputJson = false
 }
 
 public func cli() {
@@ -33,6 +34,11 @@ public func cli() {
     let formatArg = parser.add(option: "--format", shortName: "-f",
                                kind: String.self,
                                usage: "The report format to output for (one of 'html', 'junit', or comma-separated values). (default: junit)",
+                               completion: .none)
+
+    let outputJsonArg = parser.add(option: "--output-json",
+                               kind: Bool.self,
+                               usage: "Output command results with JSON",
                                completion: .none)
 
     var options = Options()
@@ -67,14 +73,16 @@ public func cli() {
       }
     }
 
+    options.outputJson = result.get(outputJsonArg) ?? false
+
 
     try main(options: options)
   } catch ArgumentParserError.expectedValue(let value) {
-    print("Missing value for argument \(value).")
+    printError("Missing value for argument \(value).")
   } catch ArgumentParserError.expectedArguments(let parser, _) {
-    parser.printUsage(on: stdoutStream)
+    parser.printUsage(on: stderrStream)
   } catch {
-    print("\(error)")
+    printError("\(error)")
   }
 }
 
@@ -105,10 +113,14 @@ func main(options: Options) throws {
     exit(1)
   }
 
+  let output: CommandOutput = options.outputJson ? JsonCommandOutput() : TextCommandOutput()
+
   try files.forEach { file in
     let fileUrl = URL(fileURLWithPath: file, relativeTo: options.pathUrl)
-    try generateReport(plistUrl: fileUrl, options: options)
+    try generateReport(plistUrl: fileUrl, options: options, output: output)
   }
+
+  output.outputAtLast()
 }
 
 func decodePlist<T>(_ type: T.Type, plistUrl: Foundation.URL) throws -> T where T : Decodable {
@@ -117,7 +129,7 @@ func decodePlist<T>(_ type: T.Type, plistUrl: Foundation.URL) throws -> T where 
   return try decoder.decode(type, from: data)
 }
 
-func generateReport(plistUrl: Foundation.URL, options: Options) throws {
+func generateReport(plistUrl: Foundation.URL, options: Options, output: CommandOutput) throws {
   let report = try decodePlist(Report.self, plistUrl: plistUrl)
 
   try options.formats.forEach { format in
@@ -133,7 +145,7 @@ func generateReport(plistUrl: Foundation.URL, options: Options) throws {
                                               outDir: options.outDirUrl)
     }
 
-    print("Generated: \(fileUrl.path)")
+    output.reportGenerated(report: report, file: fileUrl)
   }
 }
 

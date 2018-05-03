@@ -64,6 +64,10 @@ public struct TestSummary: Codable {
 
   init() {
   }
+
+  var isSuccess: Bool {
+    return failed == 0
+  }
 }
 
 func + (l: TestSummary, r: TestSummary) -> TestSummary {
